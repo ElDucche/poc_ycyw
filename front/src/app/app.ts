@@ -18,6 +18,7 @@ import { Chat } from "./chat/chat";
     </main>
   </router-outlet>`, 
 })
+
 export class App {
   protected readonly title = signal('front');
 }
