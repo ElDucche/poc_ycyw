@@ -1,0 +1,31 @@
+<div class="chat-container">
+      <h2>Support Chat (Angular Signals)</h2>
+
+      <div class="messages-area">
+        @for (msg of chatService.messages(); track $index) {
+          <div class="message">
+            <strong>{{ msg.sender }}:</strong> {{ msg.content }}
+          </div>
+        } @empty {
+          <div class="empty-state">Aucun message pour le moment.</div>
+        }
+      </div>
+
+      <div class="input-area">
+        <input
+          type="text"
+          [field]="chatMessageForm.message"
+          (keyup.enter)="sendMessage()"
+          placeholder="Tapez votre message..."
+        />
+        @if (chatMessageForm.message().touched() && chatMessageForm.message().invalid()) {
+          <div class="error-message">
+            @for (error of chatMessageForm.message().errors(); track error) {
+              <p>{{ error.message }}</p>
+            }
+          </div>
+        }
+        <button (click)="sendMessage()">Envoyer</button>
+      </div>
+    </div>
+
