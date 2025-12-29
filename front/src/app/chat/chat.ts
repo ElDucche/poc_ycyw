@@ -12,11 +12,12 @@ import { ChatMessage } from './chat-message.model';
       <div>
         <!-- Chat header -->
       </div>
-      <div>
+      <div class="overflow-y-auto h-72 mb-4 relative">
         <!-- Chat messages -->
         @for (message of messages(); track $index) {
-          <div>
-            <strong>{{ message.sender }}</strong>: {{ message.content }}
+          <div class="mb-2 flex flex-col relative pt-2">
+            <h6 class="absolute text-xs right-0 -top-2">{{ message.sender }}</h6>
+            <p class="p-2 bg-blue-600 text-slate-100 rounded w-2/3 self-end">{{ message.content }}</p>
           </div>
         } @empty {
           <div>No messages yet.</div>
