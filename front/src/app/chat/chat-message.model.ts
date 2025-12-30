@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 // Define the schema for a chat message
 export const ChatMessageSchema = z.object({
-  id: z.string(),
-  sender: z.string(),
+  id: z.number().optional(),
   content: z.string(),
-  timestamp: z.string().datetime(),
+  sender: z.string(),
+  isFromUser: z.boolean(),
 });
 
 // Infer the TypeScript type from the schema

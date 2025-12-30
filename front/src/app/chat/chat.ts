@@ -10,12 +10,16 @@ import { ChatMessage } from './chat-message.model';
   template: `
     <div class="bg-slate-800 text-slate-200 p-4 rounded-lg w-96 h-96 flex flex-col justify-between border border-slate-50/20">
       <div>
-        </div>
+        <h3 class="text-sm font-bold mb-2 text-slate-400">
+          Mode: {{ chatService.userMode() }}
+        </h3>
+      </div>
 
       <div #scrollContainer class="overflow-y-auto h-72 mb-4 relative scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
 
-        @for (message of messages(); track $index) {
-          @if (message.sender === 'User') {
+        @for (message of messages(); track message.id || $index) {
+          
+          @if (isMessageMine(message)) {
             <div class="mb-2 flex flex-col relative pt-2 first:mt-4">
               <h6 class="absolute text-xs right-0 -top-2">{{ message.sender }}</h6>
               <p class="p-2 bg-blue-600 text-slate-100 rounded w-2/3 self-end">{{ message.content }}</p>
@@ -43,7 +47,7 @@ import { ChatMessage } from './chat-message.model';
   styles: ``,
 })
 export class Chat {
-  private readonly chatService = inject(ChatService);
+  public readonly chatService = inject(ChatService);
 
   // 1. Récupération de l'élément du DOM via Signal
   private readonly scrollContainer = viewChild.required<ElementRef>('scrollContainer');
@@ -73,23 +77,13 @@ export class Chat {
 
   sendMessage(): void {
     if (this.newMessage().trim()) {
-      const message: ChatMessage = {
-        id: crypto.randomUUID(),
-        sender: 'User',
-        content: this.newMessage(),
-        timestamp: new Date().toISOString(),
-      };
-      this.chatService.sendMessage(message);
+      this.chatService.sendMessage(this.newMessage());
       this.newMessage.set('');
-
-      const supportMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        sender: 'Support',
-        content: 'Le support est informé de votre demande et tâche d\'y répondre le plus vite possible',
-        timestamp: new Date().toISOString(),
-      };
-      // Le scroll se déclenchera aussi pour ce message grâce à l'effet !
-      setTimeout(() => this.chatService.addSupportMessage(supportMessage), 1000)
     }
+  }
+
+  isMessageMine(message: ChatMessage): boolean {
+    return (this.chatService.userMode() === 'USER' && message.isFromUser) || 
+           (this.chatService.userMode() === 'SUPPORT' && !message.isFromUser);
   }
 }

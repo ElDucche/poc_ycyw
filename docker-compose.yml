@@ -3,6 +3,13 @@ services:
     build: ./back
     ports:
       - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/yourcar
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
     networks:
       - app-network
 
@@ -12,6 +19,17 @@ services:
       - "80:80"
     depends_on:
       - back
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=yourcar
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./infra/database.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
 
