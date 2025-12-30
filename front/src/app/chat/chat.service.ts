@@ -10,7 +10,7 @@ export class ChatService {
   public readonly messages = this.messagesSignal;
 
   constructor() {
-    this.socket$ = webSocket<ChatMessage>('ws://vigilant-couscous-597p4vx7wgpf7wqp-8080.app.github.dev/chat');
+    this.socket$ = webSocket<ChatMessage>('ws://localhost:8080/chat');
 
     this.socket$.subscribe({
       next: (message) => this.messagesSignal.update((current) => [...current, message]),
@@ -24,6 +24,11 @@ export class ChatService {
     this.messagesSignal.update((current) => [...current, message]);
     // Envoyer le message au serveur
     this.socket$.next(message);
+  }
+
+  addSupportMessage(message: ChatMessage): void {
+    // Ajouter le message de support immédiatement à la liste locale
+    this.messagesSignal.update((current) => [...current, message]);
   }
 
   closeConnection(): void {
