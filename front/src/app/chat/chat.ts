@@ -8,14 +8,16 @@ import { ChatMessage } from './chat-message.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
   template: `
-    <div class="bg-slate-800 text-slate-200 p-4 rounded-lg w-96 h-96 flex flex-col justify-between border border-slate-50/20">
+    <!-- Removed fixed w-96 h-96, used h-full w-full to fill parent -->
+    <div class="bg-slate-800 text-slate-200 p-4 rounded-lg w-full h-full flex flex-col justify-between border border-slate-50/20">
       <div>
+        <!-- Mode indicator only useful if ambiguous, but kept for clarity in POC -->
         <h3 class="text-sm font-bold mb-2 text-slate-400">
           Mode: {{ chatService.userMode() }}
         </h3>
       </div>
 
-      <div #scrollContainer class="overflow-y-auto h-72 mb-4 relative scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+      <div #scrollContainer class="overflow-y-auto flex-1 mb-4 relative scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
 
         @for (message of messages(); track message.id || $index) {
           
@@ -31,12 +33,17 @@ import { ChatMessage } from './chat-message.model';
             </div>
           }
         } @empty {
-          <div>No messages yet.</div>
+          <div class="text-slate-500 italic text-sm text-center mt-10">No messages yet.</div>
         }
       </div>
        <div class="flex gap-2">
-         <input class="w-full p-2 rounded bg-slate-700 text-slate-200" [ngModel]="newMessage()" (ngModelChange)="newMessage.set($event)" (keydown.enter)="sendMessage()" type="text" placeholder="Type your message..." />
-         <button class="bg-blue-500 text-sm hover:bg-blue-600 text-white px-4 py-2 rounded" (click)="sendMessage()">
+         <input class="w-full p-2 rounded bg-slate-700 text-slate-200 border border-slate-600 focus:border-blue-500 outline-none transition-colors" 
+                [ngModel]="newMessage()" 
+                (ngModelChange)="newMessage.set($event)" 
+                (keydown.enter)="sendMessage()" 
+                type="text" 
+                placeholder="Type your message..." />
+         <button class="bg-blue-500 text-sm hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors" (click)="sendMessage()">
            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
            </svg>

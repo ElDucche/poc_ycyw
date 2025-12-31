@@ -20,6 +20,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // Map "/chat" to the handler, allowing all origins
         registry.addHandler(chatWebSocketHandler, "/chat")
-                .setAllowedOriginPatterns("*");
+                .setAllowedOrigins("*");
     }
 }
